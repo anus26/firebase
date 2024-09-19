@@ -50,7 +50,7 @@ const Login = () => {
       justifyContent : 'center'
 
     }}>
-      <h1>Login</h1>
+      <h1>Register</h1>
 <div style={{
   display:'flex',
   justifyContent:'center',
