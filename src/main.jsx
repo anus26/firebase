@@ -6,6 +6,8 @@ import Home from './Pages/Home/Home.jsx'
 import Login from './Pages/Login/Login.jsx'
 import Register from './Pages/Register/Register.jsx'
 import Notfound from './Pages/Notfound.jsx'
+import  Dashboard  from './Pages/Dashboard/Dashboard.jsx'
+import Blogs from './Pages/Blogs/Blogs.jsx'
 
 
  const router = createBrowserRouter([
@@ -24,6 +26,14 @@ import Notfound from './Pages/Notfound.jsx'
       {
         path:'register',
         element:<Register/>
+      },
+      {
+        path:'dashboard',
+        element:<Dashboard/>
+      },
+      {
+        path:'blogs',
+        element:<Blogs/>
       },
       {
         path:'*',
