@@ -1,6 +1,5 @@
 import React, { useRef } from 'react'
 import {TextField} from '@mui/material'
-import { Email, Password } from '@mui/icons-material'
 import {  signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../Config/firebase/Firebaseconfig';
 import {Button} from '@mui/material'
@@ -37,6 +36,7 @@ const Login = () => {
     <>
     <div style={{
       display: 'flex',
+      
       justifyContent : 'center'
 
     }}>
@@ -50,8 +50,8 @@ const Login = () => {
 
 <form onSubmit={hanldesubmit}>
 
-<TextField id="standard-email" type='email' label="Email" variant="standard"  inputRef={emailRef}/>
-<TextField id="standard-password" type='password' label="Password" variant="standard" inputRef={passwordRef}/>
+<TextField id="standard-email" type='email' label="Email" variant="standard"  inputRef={emailRef}/><br /><br />
+<TextField id="standard-password" type='password' label="Password" variant="standard" inputRef={passwordRef}/><br /><br />
 <Button variant="contained" type='submit'>Login</Button>
 </form>
 </div>

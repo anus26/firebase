@@ -1,18 +1,50 @@
 import React, { useRef, useState } from 'react'
-import {TextField} from '@mui/material'
-import { Email, Password } from '@mui/icons-material'
 import {  createUserWithEmailAndPassword } from "firebase/auth";
+import {TextField} from '@mui/material'
 import {Button} from '@mui/material'
 import { auth } from '../../Config/firebase/Firebaseconfig';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../Config/firebase/Firebaseconfig';
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc,getDocs } from "firebase/firestore";
+import { styled } from '@mui/material/styles';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { getApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
 
-const Login = () => {
+
+
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
+
+
+
+
+
+
+
+
+
+
+
+const Register = () => {
   const navigate=useNavigate()
   const nameRef=useRef(null)
   const emailRef =useRef(null)
  const passwordRef=useRef(null)
+
+
+
 const hanldesubmit=async(event)=>{
   event.preventDefault()
   const    name   = nameRef.current.value
@@ -21,35 +53,57 @@ const hanldesubmit=async(event)=>{
   
 
 
+
                                             
      try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       console.log(user);
-      navigate('/login');
+      navigate('/login')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       
       // Add user data to Firestore
       const docRef = await addDoc(collection(db, "users"), {
         name: name,
         email: email,
         userId: user.uid
-
-
-    
-      
+         
 
 
       });
       console.log("Document written with ID: ",  docRef.id);
     
     } catch (error) {
-      console.error("Error: ", error.message,);
+      console.error("Error: ", error.message);
 
     }
-
-
     
+const querySnapshot = await getDocs(collection(db, "users"));
+querySnapshot.forEach((doc) => {
+  console.log(`${doc.id} => ${doc.data()}`);
+});
 
+// Get a non-default Storage bucket
+const firebaseApp = getApp();
+const storage = getStorage(firebaseApp, "gs://my-custom-bucket");
+
+  
 
   
    console.log('Name',name);
@@ -70,7 +124,6 @@ const hanldesubmit=async(event)=>{
 <div style={{
   display:'flex',
   justifyContent:'center',
-  
   margin:'50px'
 }}>
 
@@ -82,8 +135,34 @@ const hanldesubmit=async(event)=>{
 
 
 
-<input type="file"  />
- 
+
+    <Button
+      component="label"
+      role={undefined}
+      variant="contained"
+      tabIndex={-1}
+      startIcon={<CloudUploadIcon />}
+    >
+      Upload files
+      <VisuallyHiddenInput
+        type="file"
+        onChange={(event) => console.log(event.target.files)}
+        multiple
+        
+      />
+    </Button>
+  <br /><br />
+
+
+
+
+
+
+
+
+
+
+
 <Button variant="contained" type='submit'>Register</Button>
 </form>
 </div>
@@ -93,4 +172,12 @@ const hanldesubmit=async(event)=>{
   )
 }
 
-export default Login
+export default Register
+
+
+
+
+
+
+
+

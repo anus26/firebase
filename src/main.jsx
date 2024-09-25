@@ -16,7 +16,7 @@ import Blogs from './Pages/Blogs/Blogs.jsx'
     element:<Layout/>,
     children:[
       {
-        path:'',
+        path:'/',
         element:<Home />,
       },
       {
