@@ -8,6 +8,7 @@ import Register from './Pages/Register/Register.jsx'
 import Notfound from './Pages/Notfound.jsx'
 import  Dashboard  from './Pages/Dashboard/Dashboard.jsx'
 import Blogs from './Pages/Blogs/Blogs.jsx'
+import ProtectedRoutes from './Pages/ProtectedRoutes.jsx'
 
 
  const router = createBrowserRouter([
@@ -29,7 +30,7 @@ import Blogs from './Pages/Blogs/Blogs.jsx'
       },
       {
         path:'dashboard',
-        element:<Dashboard/>
+        element:<ProtectedRoutes component={< Dashboard/>}/>
       },
       {
         path:'blogs',

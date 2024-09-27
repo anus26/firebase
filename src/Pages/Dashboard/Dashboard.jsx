@@ -40,7 +40,10 @@ const Dashboard = () => {
   return (
     <>
 <div>
-  <h1>Dashboard</h1>
+  <h1 style={{
+    display:'flex',
+    justifyContent:"center"
+  }}>Dashboard</h1>
 <form onSubmit={hanldesubmit}>
   <div>
 
@@ -78,7 +81,8 @@ return(
   style={{
     border:'10px soild black',
     margin:'20px',
-    padding:'2px'
+    padding:'2px',
+    
   }}
 >
     <h1>placeholder:{item.placeholder}</h1>

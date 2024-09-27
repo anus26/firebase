@@ -2,16 +2,12 @@ import React, { useRef, useState } from 'react'
 import {  createUserWithEmailAndPassword } from "firebase/auth";
 import {TextField} from '@mui/material'
 import {Button} from '@mui/material'
-import { auth } from '../../Config/firebase/Firebaseconfig';
+import { auth,db } from '../../Config/firebase/Firebaseconfig';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../../Config/firebase/Firebaseconfig';
 import { collection, addDoc,getDocs } from "firebase/firestore";
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { getApp } from "firebase/app";
-import { getStorage } from "firebase/storage";
-
-
+import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -42,7 +38,7 @@ const Register = () => {
   const nameRef=useRef(null)
   const emailRef =useRef(null)
  const passwordRef=useRef(null)
-
+const storage=getStorage()
 
 
 const hanldesubmit=async(event)=>{
@@ -99,11 +95,11 @@ querySnapshot.forEach((doc) => {
   console.log(`${doc.id} => ${doc.data()}`);
 });
 
-// Get a non-default Storage bucket
-const firebaseApp = getApp();
-const storage = getStorage(firebaseApp, "gs://my-custom-bucket");
 
-  
+
+
+  // 'file' comes from the Blob or File API
+
 
   
    console.log('Name',name);
@@ -111,6 +107,23 @@ const storage = getStorage(firebaseApp, "gs://my-custom-bucket");
   console.log('Email', email);
   console.log('Password', password);
   
+ }
+
+
+ const handleFileUpload=async(event)=>{
+  const file=event.target.files[0]
+  if (!file) return
+    
+  const storageRef=ref(storage,`image/${emailRef.current.value}/${file.name}`)
+  try{
+    const snapshot=await uploadBytes(storageRef,file)
+    const downloadURL=await getDownloadURL(snapshot.ref)
+    console.log('File ha:',downloadURL);
+    
+  }catch(error){
+    console.log(error);
+    
+  }
  }
 
   return (
@@ -146,7 +159,7 @@ const storage = getStorage(firebaseApp, "gs://my-custom-bucket");
       Upload files
       <VisuallyHiddenInput
         type="file"
-        onChange={(event) => console.log(event.target.files)}
+        onChange={handleFileUpload}
         multiple
         
       />
