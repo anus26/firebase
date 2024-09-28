@@ -1,13 +1,20 @@
 import React, { useRef, useState } from 'react'
-
 import { Button } from '@mui/material';
+import { Card, CardActions,AvatarGroup,Avatar,Box} from "@mui/material";
+import { CardContent } from "@mui/material";
+import { Typography } from "@mui/material";
+import  FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import { IconButton } from "@mui/material";
 import { db } from '../../Config/firebase/Firebaseconfig';
 import { collection, addDoc } from "firebase/firestore"; 
 import TextField from '@mui/material/TextField';
+import { doc, deleteDoc , updateDoc} from "firebase/firestore";
+
 const Dashboard = () => {
   const [blogs,setBlogs]=useState([])
   const PlacholderRef=useRef(null)
   const commentRef=useRef(null)
+  
   const hanldesubmit=async(event)=>{
     event.preventDefault()
   const placeholder=PlacholderRef.current.value
@@ -17,7 +24,7 @@ const Dashboard = () => {
 
 
   try {
-    const docRef = await addDoc(collection(db, "users"), {
+    const docRef = await addDoc(collection(db, "blogs"), {
      placeholder:placeholder,
      comment:comment
      
@@ -34,6 +41,22 @@ const Dashboard = () => {
   }
 
 
+  
+  
+  }
+
+
+  const handledelete=async(id)=>{
+    
+    try {
+      await deleteDoc(doc(db,'blogs',id))
+      setBlogs (prevBlogs=>prevBlogs.filter(blogs=>blogs.id !==id))
+    } catch (error) {
+      console.log(error);
+      
+    }
+    
+ 
   
   
   }
@@ -77,16 +100,57 @@ const Dashboard = () => {
     </form>
 {blogs . length >0 ? blogs.map ((item ,index)=>{
 return(
-  <div key={index}
-  style={{
-    border:'10px soild black',
-    margin:'20px',
-    padding:'2px',
+  <div key={item.id}
+ 
     
-  }}
+  
 >
-    <h1>placeholder:{item.placeholder}</h1>
-    <h2>comment:{item.comment}</h2>
+
+<Card
+      variant="outlined"
+      sx={{
+        width: 320,
+        // to make the card resizable
+        overflow: 'auto',
+        resize: 'horizontal',
+      }}
+    >
+       <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Avatar src="/static/images/avatar/1.jpg" size="lg" />
+        {/* <AvatarGroup size="sm" sx={{ '--Avatar-size': '28px' }}>
+          <Avatar src="/static/images/avatar/2.jpg" />
+          <Avatar src="/static/images/avatar/3.jpg" />
+          <Avatar src="/static/images/avatar/4.jpg" />
+          <Avatar>+4K</Avatar> */}
+        {/* </AvatarGroup> */}
+      </Box>
+
+     
+      <CardContent>
+        <Typography level="title-lg">{item.placeholder}</Typography>
+        <Typography level="body-sm">
+          {item.comment}
+        </Typography>
+      </CardContent>
+      <CardActions buttonFlex="0 1 120px">
+        <IconButton variant="outlined" color="neutral" sx={{ mr: 'auto' }}>
+          <FavoriteBorder />
+        </IconButton>
+        <Button variant="outlined" color="neutral" onClick={()=>handledelete(item.id)}>
+          Delete
+        </Button>
+        <Button variant="solid" color="primary">
+          Edit
+        </Button>
+      </CardActions>
+    </Card>
+  
   </div>
 )
 }):<h1>loading...</h1>}

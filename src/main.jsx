@@ -30,7 +30,7 @@ import ProtectedRoutes from './Pages/ProtectedRoutes.jsx'
       },
       {
         path:'dashboard',
-        element:<ProtectedRoutes component={< Dashboard/>}/>
+        element:< ProtectedRoutes component={<Dashboard/>}/>
       },
       {
         path:'blogs',
