@@ -3,17 +3,21 @@ import {TextField} from '@mui/material'
 import {  signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../Config/firebase/Firebaseconfig';
 import {Button} from '@mui/material'
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const emailRef =useRef(null)
  const passwordRef=useRef(null)
+ const navigate=useNavigate()
  const hanldesubmit =(event)=>{
   event.preventDefault()
+  
   const email = emailRef.current.value;
   const password = passwordRef.current.value;
   signInWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
     const user = userCredential.user;
     console.log(user);
+    navigate('/dashboard')
   })
   .catch((error) => {
     const errorMessage = error.message;
