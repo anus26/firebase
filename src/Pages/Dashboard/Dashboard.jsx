@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState ,useEffect} from 'react'
 import { Button } from '@mui/material';
 import { Card, CardActions,AvatarGroup,Avatar,Box} from "@mui/material";
 import { CardContent } from "@mui/material";
@@ -9,11 +9,27 @@ import { db } from '../../Config/firebase/Firebaseconfig';
 import { collection, addDoc } from "firebase/firestore"; 
 import TextField from '@mui/material/TextField';
 import { doc, deleteDoc , updateDoc} from "firebase/firestore";
+import { getDocs } from "firebase/firestore";
+import { common } from '@mui/material/colors';
+import { useActionData } from 'react-router-dom';
 
 const Dashboard = () => {
   const [blogs,setBlogs]=useState([])
+  const [editingblogs,setEditingBlogs]=useState([])
   const PlacholderRef=useRef(null)
   const commentRef=useRef(null)
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      const querySnapshot = await getDocs(collection(db, "blogs"));
+      const blogsData = querySnapshot.docs.map(doc => ({
+        id: doc.id, // Store the document ID
+        ...doc.data() // Store the rest of the document data
+      }));
+      setBlogs(blogsData); // Set the blogs in state
+    };
+    fetchBlogs();
+  }, []);
   
   const hanldesubmit=async(event)=>{
     event.preventDefault()
@@ -32,7 +48,7 @@ const Dashboard = () => {
     console.log("Document written with ID: ", docRef.id);
     setBlogs((prevBlogs)=>[
       ...prevBlogs,
-      {placeholder:placeholder, comment:comment}
+      {placeholder:placeholder, comment:comment, id:docRef.id}
     ])
     PlacholderRef.current.value=''
     commentRef.current.value=''
@@ -60,6 +76,35 @@ const Dashboard = () => {
   
   
   }
+  const handleedit =async(id,currentplaceholder,currentcomment)=>{
+    const newplaceholder=prompt("Edit placeholder",currentplaceholder)
+    const newcomment=prompt("Edit comment",currentcomment)
+    if (newplaceholder!==null&& newcomment!==null) {
+      
+      try {
+        await updateDoc(doc(db,'blogs',id),{
+        
+          placeholder:newplaceholder,
+          comment:newcomment
+        })
+        setEditingBlogs((prevBlogs) =>
+          prevBlogs.map(editingblogs =>
+            editingblogs.id === id ? { ...editingblogs, placeholder: newplaceholder, comment: newcomment } : editingblogs
+
+          )
+        );
+  
+       console.log('successfully');
+       
+  
+  
+  
+      } catch (error) {
+    console.log(error);
+    
+      }
+    }
+    }
   return (
     <>
 <div>
@@ -145,7 +190,8 @@ return(
         <Button variant="outlined" color="neutral" onClick={()=>handledelete(item.id)}>
           Delete
         </Button>
-        <Button variant="solid" color="primary">
+        <Button variant="solid" color="primary" onClick={()=>handleedit(item.id,item.placeholder,item.comment
+        )}>
           Edit
         </Button>
       </CardActions>
