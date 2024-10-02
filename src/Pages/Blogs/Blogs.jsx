@@ -93,8 +93,8 @@ import  FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import { IconButton } from "@mui/material";
 import { Button } from '@mui/material';
 import { TextField } from '@mui/material';
-import { db } from '../../Config/firebase/Firebaseconfig';
-import { collection } from 'firebase/firestore';
+import { auth } from '../../Config/firebase/Firebaseconfig';
+import {getAuth, updatePassword , reauthenticateWithCredential,EmailAuthProvider} from 'firebase/auth';
 const Blogs = () => {
 const oldpasswordRef=useRef(null)
 const passwordRef=useRef(null)
@@ -103,31 +103,46 @@ const repeatpasswordRef=useRef(null)
 
 const handlesubmit=async(event)=>{
   event.preventDefault()
-  const old=oldpasswordRef.current.value
-  const newpassword=passwordRef.current.value
-  const repeat=repeatpasswordRef.current.value
+  
+  const oldPassword = oldpasswordRef.current.value;
+  const newPassword = passwordRef.current.value;
+  const repeatPassword = repeatpasswordRef.current.value;
   
 oldpasswordRef.current.value=''
 passwordRef.current.value=''
 repeatpasswordRef.current.value=''
-
-try {
-  if (newpassword !== repeatpassword) {
-    throw new Error("password not match");
-    
-    
-  }
-
-} catch (error) {
-  console.log(error);
+if (newPassword !== repeatPassword) {
+  console.log('new password do not match');
+  return;
   
 }
 
-console.log('oldpassword',old);
-console.log('newpassword',newpassword);
+const user = auth.currentUser;
+if (user) {
+  
+  const credential = EmailAuthProvider.credential(
+    user.email,
+    oldPassword
+  );
+  reauthenticateWithCredential(user, credential)
+  .then(() => {
+    updatePassword(user, newPassword).then(() => {
+      console.log('new password update successfully');
+      
+    }).catch((error) => {
+      console.log('error update password',error);
+      
+    });
+  }).catch((error) => {
+ console.log('error reauthenticate', error);
+ 
+});
+} else {
+  console.log('not user singin');
+  
+}
 
-
-
+console.log();
 
 }
 
@@ -166,7 +181,6 @@ console.log('newpassword',newpassword);
  
       </CardContent>
       <form onSubmit={handlesubmit}>
-        
 <TextField id="standard-Old Password" type='password' label="Old Password" variant="standard" inputRef={oldpasswordRef} /><br /><br />
 <TextField id="standard-New Password" type='password' label="New Password" variant="standard" inputRef={passwordRef} /><br /><br />
 <TextField id="standard-Repeat Password" type='password' label="Repeat Password" variant="standard" inputRef={repeatpasswordRef} /><br /><br />
@@ -191,3 +205,4 @@ console.log('newpassword',newpassword);
 }
 
 export default Blogs
+
