@@ -55,36 +55,36 @@ const hanldesubmit=async(event)=>{
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       console.log(user);
-      navigate('/login')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       
       // Add user data to Firestore
       const docRef = await addDoc(collection(db, "users"), {
         name: name,
         email: email,
         userId: user.uid
-         
-
-
+        
+        
+        
       });
       console.log("Document written with ID: ",  docRef.id);
-    
+      
+      navigate('/login')
     } catch (error) {
       console.error("Error: ", error.message);
 
