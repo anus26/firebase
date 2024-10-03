@@ -19,10 +19,7 @@ const ProtectedRoutes = ({component}) => {
              
             }
           });
-        //   if (!userLoggedIn) {
-        //     navigate('login')
-            
-        //   }
+      
     })
   return (
    <>
